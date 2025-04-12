@@ -3,156 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Image Compressor Tool">
-    <meta name="keywords" content="image compressor, compress image, image optimization">
-    <title>Image Compressor</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <title>Free Image Compression Tool - Compress Images Online</title>
+    <meta name="description" content="Compress your images online for free with our easy-to-use tool. Adjust compression levels and download optimized images.">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav>
-            <h1>Image Compressor</h1>
-        </nav>
+        <h1>Free Image Compression Tool</h1>
+        <div id="ad-leaderboard">
+            <!-- Insert your Google AdSense code here -->
+        </div>
     </header>
-    <main>
-        <section class="compressor">
-            <div class="container">
-                <h2>Compress Your Images</h2>
-                <div class="input-group">
-                    <input type="file" id="image-input" accept="image/*">
-                    <label for="image-input">Select Image</label>
-                </div>
-                <div class="slider-group">
-                    <label for="compression-level">Compression Level:</label>
-                    <input type="range" id="compression-level" min="0" max="100" value="50">
-                    <span id="compression-level-display">50%</span>
-                </div>
-                <button id="compress-button">Compress Image</button>
-                <div class="image-container">
-                    <div class="image-box">
-                        <h3>Original Image</h3>
-                        <img id="original-image" src="" alt="Original Image">
-                    </div>
-                    <div class="image-box">
-                        <h3>Compressed Image</h3>
-                        <img id="compressed-image" src="" alt="Compressed Image">
-                    </div>
-                </div>
-                <div id="ads-container">
-                    <!-- Google AdSense Ad Unit will be inserted here -->
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                         data-ad-slot="XXXXXXXXXX"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                </div>
-            </div>
+    <main class="container">
+        <section>
+            <h2>Upload Image</h2>
+            <label for="imageUpload">Select Image:</label>
+            <input type="file" id="imageUpload" accept="image/*">
+        </section>
+        <section>
+            <h2>Compression Settings</h2>
+            <label for="maxSize">Max Size (MB):</label>
+            <input type="number" id="maxSize" value="1" step="0.1">
+            <br>
+            <label for="maxDim">Max Width or Height (px):</label>
+            <input type="number" id="maxDim" value="1920">
+        </section>
+        <section>
+            <button id="compressBtn">Compress Image</button>
+        </section>
+        <section>
+            <h2>Original Image</h2>
+            <div id="originalImage"></div>
+        </section>
+        <section>
+            <h2>Compressed Image</h2>
+            <div id="compressedImage"></div>
+            <a id="downloadLink" style="display:none;" download="compressed_image.jpg">Download Compressed Image</a>
         </section>
     </main>
-    <script src="script.js"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"></script>
+    <footer>
+        <p>© 2025 Image Compression Tool</p>
+        <div id="ad-skyscraper">
+            <!-- Insert your Google AdSense code here -->
+        </div>
+    </footer>
+    <script type="text/javascript" src="[invalid url, do not cite]
+    <script>
+        const imageUpload = document.getElementById('imageUpload');
+        const originalImage = document.getElementById('originalImage');
+        const compressedImage = document.getElementById('compressedImage');
+        const downloadLink = document.getElementById('downloadLink');
+        const maxSize = document.getElementById('maxSize');
+        const maxDim = document.getElementById('maxDim');
+        const compressBtn = document.getElementById('compressBtn');
+
+        imageUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const objectURL = URL.createObjectURL(file);
+                originalImage.innerHTML = `<img src="${objectURL}" alt="Original image" style="max-width:100%;">`;
+                compressedImage.innerHTML = '';
+                downloadLink.style.display = 'none';
+            }
+        });
+
+        compressBtn.addEventListener('click', async function() {
+            const file = imageUpload.files[0];
+            if (!file) {
+                alert('Please select an image first.');
+                return;
+            }
+            const maxSizeMB = parseFloat(maxSize.value);
+            const maxWidthOrHeight = parseInt(maxDim.value);
+            
+            const options = {
+                maxSizeMB: maxSizeMB,
+                maxWidthOrHeight: maxWidthOrHeight,
+                useWebWorker: true
+            };
+            
+            try {
+                const compressedFile = await imageCompression(file, options);
+                const compressedUrl = URL.createObjectURL(compressedFile);
+                compressedImage.innerHTML = `<img src="${compressedUrl}" alt="Compressed image" style="max-width:100%;">`;
+                downloadLink.href = compressedUrl;
+                downloadLink.style.display = 'block';
+                const originalName = file.name;
+                downloadLink.download = `compressed_${originalName}`;
+            } catch (error) {
+                console.log(error);
+                alert('Error compressing image.');
+            }
+        });
+    </script>
 </body>
 </html>
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-body {
-    background-color: #f0f0f0;
-}
-
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 1em;
-    text-align: center;
-}
-
-header nav h1 {
-    font-weight: 600;
-    font-size: 24px;
-}
-
-main {
-    display: flex;
-    justify-content: center;
-    padding: 2em;
-}
-
-.compressor {
-    background-color: #fff;
-    padding: 2em;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 800px;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.input-group {
-    margin-bottom: 1em;
-    width: 100%;
-}
-
-.input-group input[type="file"] {
-    display: none;
-}
-
-.input-group label {
-    background-color: #4CAF50;
-    color: #fff;
-    padding: 1em 2em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-}
-
-.slider-group {
-    margin-bottom: 1em;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.slider-group label {
-    margin-bottom: 0.5em;
-}
-
-#compression-level {
-    width: 100%;
-}
-
-#compression-level-display {
-    display: block;
-    text-align: right;
-    width: 100%;
-}
-
-#compress-button {
-    background-color: #4CAF50;
-    color: #fff;
-    padding: 1em 2em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.image-container {
-    display: flex;
-    flex-wrap: wrap
